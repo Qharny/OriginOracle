@@ -24,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: Text('Nationality Predictor', style: TextStyle(fontSize: 24)),
+        child: Text('Origin Oracle', style: TextStyle(fontSize: 24)),
       ),
     );
   }

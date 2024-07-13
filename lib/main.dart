@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Nationality Predictor',
+      title: 'Origin Oracle',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupScreen(),
         '/home': (context) => const HomeScreen(),
       },
-      // home: const LoginScreen(),
     );
   }
 }
