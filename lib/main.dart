@@ -1,37 +1,50 @@
-import 'package:firebase_core/firebase_core.dart';
+// main.dart
 import 'package:flutter/material.dart';
-import 'package:originoracle/firebase_options.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:originoracle/screen/signup.dart';
 import 'screen/dashboard.dart';
 import 'screen/home.dart';
 import 'screen/login.dart';
-import 'screen/signup.dart';
 import 'screen/splash.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AuthService _authService = AuthService();
+
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Origin Oracle',
+      title: 'OriginOracle',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      home: FutureBuilder<bool>(
+        future: _authService.isLoggedIn(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen();
+          } else {
+            if (snapshot.data == true) {
+              return DashboardScreen();
+            } else {
+              return const LoginScreen();
+            }
+          }
+        },
+      ),
       routes: {
-        '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
-        '/dashboard': (context) => const DashboardScreen(),
-        '/predict': (context) => const PredictionScreen()
+        '/dashboard': (context) => DashboardScreen(),
+        '/predict': (context) => const PredictionScreen(),
       },
     );
   }

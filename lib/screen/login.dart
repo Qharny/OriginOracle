@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:originoracle/screen/signup.dart';
+import 'package:originoracle/services/auth_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,69 +12,56 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  final AuthService _authService = AuthService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  Future<void> _signIn() async {
+    try {
+      await _authService.signIn(
+        _emailController.text,
+        _passwordController.text,
+      );
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${e.toString()}')),
+        );
+      }
+    }
+  }
+
   Future<void> _signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-      await _auth.signInWithCredential(credential);
-      Navigator.pushReplacementNamed(context, '/home');
+      await _authService.signInWithGoogle();
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      }
     } catch (e) {
-      print(e);
-      // Handle error
-      _showErrorSnackBar(e.toString());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google Sign-In failed: ${e.toString()}')),
+        );
+      }
     }
   }
 
   Future<void> _signInWithApple() async {
     try {
-      final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-      final oauthCredential = OAuthProvider("apple.com").credential(
-        idToken: credential.identityToken,
-        accessToken: credential.authorizationCode,
-      );
-      await _auth.signInWithCredential(oauthCredential);
-      Navigator.pushReplacementNamed(context, '/home');
+      await _authService.signInWithApple();
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      }
     } catch (e) {
-      print(e);
-      // Handle error
-      _showErrorSnackBar(e.toString());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Apple Sign-In failed: ${e.toString()}')),
+        );
+      }
     }
-  }
-
-  Future<void> _signInWithEmailAndPassword() async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    } catch (e) {
-      print(e);
-      _showErrorSnackBar(e.toString());
-    }
-  }
-
-  void _showErrorSnackBar(String errorMessage) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(errorMessage),
-      backgroundColor: Colors.red,
-    ));
   }
 
   @override
@@ -119,37 +106,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                        onPressed: _signInWithEmailAndPassword,
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.blue,
-                          backgroundColor: Colors.white,
-                        ),
-                        child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Don\'t have an account?'),
-                              Text('Login'),
-                            ])),
+                      onPressed: _signIn,
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
+                      ),
+                      child: const Text('Login'),
+                    ),
                     const SizedBox(height: 10),
                     TextButton(
-                      child: const Text('Sign Up',
-                          style: TextStyle(color: Colors.white)),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (context) => const SignupScreen()),
+                        );
                       },
+                      child: const Text(
+                        'Don\'t have an account? Sign Up',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.google,
-                              color: Colors.white),
+                          icon: const FaIcon(FontAwesomeIcons.google, color: Colors.white),
                           onPressed: _signInWithGoogle,
                         ),
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.apple,
-                              color: Colors.white),
+                          icon: const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
                           onPressed: _signInWithApple,
                         ),
                       ],
