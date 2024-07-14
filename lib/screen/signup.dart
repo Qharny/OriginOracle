@@ -25,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
       // Update user profile with name
       await userCredential.user?.updateDisplayName(_nameController.text);
       
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/predict');
     } catch (e) {
       _showErrorSnackBar(e.toString());
     }

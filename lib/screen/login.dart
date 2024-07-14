@@ -119,13 +119,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: _signInWithEmailAndPassword,
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.blue,
-                        backgroundColor: Colors.white,
-                      ),
-                      child: const Text('Login'),
-                    ),
+                        onPressed: _signInWithEmailAndPassword,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.blue,
+                          backgroundColor: Colors.white,
+                        ),
+                        child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Don\'t have an account?'),
+                              Text('Login'),
+                            ])),
                     const SizedBox(height: 10),
                     TextButton(
                       child: const Text('Sign Up',
