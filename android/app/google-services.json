@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "491541874068",
+    "project_id": "originoracle-950d4",
+    "storage_bucket": "originoracle-950d4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491541874068:android:183e445eacebeaca8abb81",
+        "android_client_info": {
+          "package_name": "com.example.originoracle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "491541874068-74oc0jbs05283pdb7n4tguanr5fdjmit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBssrQypZ1Czda1dhNf7rLeVQzIFEA7Y0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "491541874068-74oc0jbs05283pdb7n4tguanr5fdjmit.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
