@@ -12,7 +12,7 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF66B4F4),
+        backgroundColor: const Color(0xFF66B4F4),
         title: const Text('Dashboard'),
         actions: [
           IconButton(
@@ -68,10 +68,11 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 _buildFeatureCard(
-                  icon: FontAwesomeIcons.history,
-                  title: 'Search History',
-                  description: 'Keep track of your past name searches and results.',
-                ),
+  icon: FontAwesomeIcons.history,
+  title: 'Search History',
+  description: 'Keep track of your past name searches and results.',
+  onTap: () => Navigator.pushNamed(context, '/search_history'),
+),
                 const Spacer(),
                 Center(
                   child: ElevatedButton.icon(
@@ -99,38 +100,43 @@ class DashboardScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required String description,
+    VoidCallback? onTap,
+    
   }) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Row(
-        children: [
-          FaIcon(icon, color: Colors.white, size: 40),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          children: [
+            FaIcon(icon, color: Colors.white, size: 40),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  description,
-                  style: const TextStyle(color: Colors.white70),
-                ),
-              ],
+                  const SizedBox(height: 5),
+                  Text(
+                    description,
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

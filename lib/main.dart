@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'screen/dashboard.dart';
 import 'screen/home.dart';
 import 'screen/login.dart';
+import 'screen/search_history.dart';
 import 'screen/signup.dart';
 import 'screen/splash.dart';
 import 'services/auth_service.dart';
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => const SignupScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/predict': (context) => const PredictionScreen(),
+        '/search_history': (context) => const SearchHistoryScreen(),
       },
     );
   }

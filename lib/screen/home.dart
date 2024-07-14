@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PredictionScreen extends StatefulWidget {
-  const PredictionScreen({super.key});
+  const PredictionScreen({Key? key}) : super(key: key);
 
   @override
   State<PredictionScreen> createState() => _PredictionScreenState();
@@ -16,18 +16,34 @@ class _PredictionScreenState extends State<PredictionScreen> {
   bool _isLoading = false;
 
   Future<void> _predictNationality() async {
+    if (_nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a name')),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
+      _predictions = [];
     });
 
     try {
-      final response = await http.get(Uri.parse('https://api.nationalize.io/?name=${_nameController.text}'));
-      
+      final response = await http.get(
+        Uri.parse('https://api.nationalize.io/?name=${_nameController.text}'),
+      );
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        setState(() {
-          _predictions = List<Map<String, dynamic>>.from(data['country']);
-        });
+        if (data['country'] != null) {
+          setState(() {
+            _predictions = List<Map<String, dynamic>>.from(data['country']);
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No predictions found for this name')),
+          );
+        }
       } else {
         throw Exception('Failed to predict nationality');
       }
@@ -46,7 +62,8 @@ class _PredictionScreenState extends State<PredictionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Predict Nationality', style: TextStyle(color: Colors.white)),
+        title: const Text('Predict Nationality',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue.shade700,
       ),
       body: Container(
@@ -87,7 +104,8 @@ class _PredictionScreenState extends State<PredictionScreen> {
                         label: Text(_isLoading ? 'Predicting...' : 'Predict'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue.shade700,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -102,30 +120,39 @@ class _PredictionScreenState extends State<PredictionScreen> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : _predictions.isEmpty
-                        ? const Center(child: Text('Enter a name and tap Predict to start'))
+                        ? const Center(
+                            child:
+                                Text('Enter a name and tap Predict to start'))
                         : ListView.builder(
                             itemCount: _predictions.length,
                             itemBuilder: (context, index) {
                               final prediction = _predictions[index];
                               return Card(
                                 elevation: 3,
-                                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 4),
                                 child: ListTile(
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.blue.shade100,
-                                    child: const FaIcon(FontAwesomeIcons.globe, size: 20),
+                                    child: const FaIcon(FontAwesomeIcons.globe,
+                                        size: 20),
                                   ),
                                   title: Text(
                                     '${prediction['country_id']}',
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: Text(
                                     'Probability: ${(prediction['probability'] * 100).toStringAsFixed(2)}%',
                                   ),
-                                  trailing: LinearProgressIndicator(
-                                    value: prediction['probability'],
-                                    backgroundColor: Colors.grey.shade200,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade700),
+                                  trailing: SizedBox(
+                                    width: 100,
+                                    child: LinearProgressIndicator(
+                                      value: prediction['probability'],
+                                      backgroundColor: Colors.grey.shade200,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.blue.shade700),
+                                    ),
                                   ),
                                 ),
                               );
