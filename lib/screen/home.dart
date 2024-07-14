@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class PredictionScreen extends StatefulWidget {
+  const PredictionScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<PredictionScreen> createState() => _PredictionScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _PredictionScreenState extends State<PredictionScreen> {
   final TextEditingController _nameController = TextEditingController();
   List<Map<String, dynamic>> _predictions = [];
 
