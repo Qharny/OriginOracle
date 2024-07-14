@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:originoracle/services/auth_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -10,7 +12,8 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+  final AuthService _authService = AuthService();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -21,13 +24,31 @@ class _SignupScreenState extends State<SignupScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      
+
       // Update user profile with name
       await userCredential.user?.updateDisplayName(_nameController.text);
-      
-      Navigator.pushReplacementNamed(context, '/predict');
+
+      Navigator.pushReplacementNamed(context, '/dashboard');
     } catch (e) {
       _showErrorSnackBar(e.toString());
+    }
+  }
+
+  Future<void> _signUpWithGoogle() async {
+    try {
+      await _authService.signInWithGoogle();
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } catch (e) {
+      _showErrorSnackBar('Google Sign-Up failed: ${e.toString()}');
+    }
+  }
+
+  Future<void> _signUpWithApple() async {
+    try {
+      await _authService.signInWithApple();
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } catch (e) {
+      _showErrorSnackBar('Apple Sign-Up failed: ${e.toString()}');
     }
   }
 
@@ -102,17 +123,32 @@ class _SignupScreenState extends State<SignupScreen> {
                     ElevatedButton(
                       onPressed: _signUp,
                       style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.blue, backgroundColor: Colors.white,
+                        foregroundColor: Colors.blue,
+                        backgroundColor: Colors.white,
                       ),
                       child: const Text('Sign Up'),
                     ),
                     const SizedBox(height: 10),
                     TextButton(
-                      child: const Text('Already have an account? Login', 
-                                  style: TextStyle(color: Colors.white)),
+                      child: const Text('Already have an account? Login',
+                          style: TextStyle(color: Colors.white)),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, '/login');
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          icon: const FaIcon(FontAwesomeIcons.google, color: Colors.white),
+                          onPressed: _signUpWithGoogle,
+                        ),
+                        IconButton(
+                          icon: const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
+                          onPressed: _signUpWithApple,
+                        ),
+                      ],
                     ),
                   ],
                 ),

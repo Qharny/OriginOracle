@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:originoracle/screen/signup.dart';
 import 'package:originoracle/services/auth_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -116,9 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 10),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => const SignupScreen()),
-                        );
+                        Navigator.pushReplacementNamed(context, '/signup');
                       },
                       child: const Text(
                         'Don\'t have an account? Sign Up',
@@ -130,11 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.google, color: Colors.white),
+                          icon: const FaIcon(FontAwesomeIcons.google,
+                              color: Colors.white),
                           onPressed: _signInWithGoogle,
                         ),
                         IconButton(
-                          icon: const FaIcon(FontAwesomeIcons.apple, color: Colors.white),
+                          icon: const FaIcon(FontAwesomeIcons.apple,
+                              color: Colors.white),
                           onPressed: _signInWithApple,
                         ),
                       ],
